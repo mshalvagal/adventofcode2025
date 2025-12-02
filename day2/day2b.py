@@ -46,7 +46,7 @@ def solve(path):
     for line in lines:
         a, b = map(int, line.split('-'))
         number_range = range(a, b + 1)
-        flag = map(lambda x: check_repeats(x), number_range)
+        flag = map(check_repeats, number_range)
         ans += sum(flag)
 
     return int(ans)
