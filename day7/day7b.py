@@ -27,24 +27,6 @@ def pprint(a, name):
 import random
 from collections import defaultdict
 
-def propagate(map, pos, direction):
-    x, y = pos
-    dx, dy = direction
-    boundary = False
-    while True:
-        x += dx
-        y += dy
-        if x < 0 or y < 0 or x >= map.shape[0] or y >= map.shape[1]:
-            boundary = True
-            break
-        if map[x, y] == '#':
-            pos = (x - dx, y - dy)
-            direction = (dy, -dx)
-            break
-        if map[x, y] == '.':
-            map[x, y] = 'X'
-    return boundary, map, pos, direction
-
 def solve(path):
     ans = 0
     with open(path) as f:
@@ -58,21 +40,12 @@ def solve(path):
         new_light_cols = defaultdict(int)
         for col, count in light_cols.items():
             if map[row, col] == '.':
-                if col not in new_light_cols:
-                    new_light_cols[col] = count
-                else:
-                    new_light_cols[col] += count
+                new_light_cols[col] += count
             elif map[row, col] == '^':
                 if col > 0:
-                    if col - 1 not in new_light_cols:
-                        new_light_cols[col - 1] = count
-                    else:
-                        new_light_cols[col - 1] += count
+                    new_light_cols[col - 1] += count
                 if col < map.shape[1] - 1:
-                    if col + 1 not in new_light_cols:
-                        new_light_cols[col + 1] = count
-                    else:
-                        new_light_cols[col + 1] += count
+                    new_light_cols[col + 1] += count
         light_cols = new_light_cols
     
     for count in light_cols.values():

@@ -35,20 +35,21 @@ def solve(path):
     grid = [list(line) for line in input]
     map = np.array(grid)
     
-    light_cols = [np.where(map == 'S')[1][0]]
+    start_col = np.where(map == 'S')[1][0]
+    map[0, start_col] = '|'
     for row in range(1, map.shape[0]):
-        new_light_cols = []
-        for col in light_cols:
-            if map[row, col] == '.':
-                new_light_cols.append(col)
-            elif map[row, col] == '^':
-                ans += 1
-                if col > 0:
-                    new_light_cols.append(col - 1)
-                if col < map.shape[1] - 1:
-                    new_light_cols.append(col + 1)
-        light_cols = list(set(new_light_cols))
+        for col in range(map.shape[1]):
+            if map[row - 1, col] == '|':
+                if map[row, col] == '.':
+                    map[row, col] = '|'
+                elif map[row, col] == '^':
+                    ans += 1
+                    if col > 0:
+                        map[row, col - 1] = '|'
+                    if col < map.shape[1] - 1:
+                        map[row, col + 1] = '|'
 
+    print(map)
     return int(ans)
 
 EXAMPLE_ANS = 21

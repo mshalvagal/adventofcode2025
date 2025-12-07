@@ -26,6 +26,9 @@ def pprint(a, name):
 
 import random
 from collections import defaultdict
+    
+def add_to_map(map, row, col, value):
+    map[row, col] += value
 
 def solve(path):
     ans = 0
@@ -34,24 +37,28 @@ def solve(path):
 
     grid = [list(line) for line in input]
     map = np.array(grid)
-    
-    light_cols = [np.where(map == 'S')[1][0]]
+    light_map = np.zeros(map.shape, dtype=int)
+
+    start_col = np.where(map == 'S')[1][0]
+    light_map[0, start_col] = 1
     for row in range(1, map.shape[0]):
-        new_light_cols = []
-        for col in light_cols:
-            if map[row, col] == '.':
-                new_light_cols.append(col)
-            elif map[row, col] == '^':
-                ans += 1
-                if col > 0:
-                    new_light_cols.append(col - 1)
-                if col < map.shape[1] - 1:
-                    new_light_cols.append(col + 1)
-        light_cols = list(set(new_light_cols))
+        for col in range(map.shape[1]):
+            if light_map[row - 1, col] > 0:
+                if map[row, col] == '.':
+                    add_to_map(light_map, row, col, light_map[row - 1, col])
+                elif map[row, col] == '^':
+                    if col > 0:
+                        add_to_map(light_map, row, col - 1, light_map[row - 1, col])
+                    if col < map.shape[1] - 1:
+                        add_to_map(light_map, row, col + 1, light_map[row - 1, col])
+    # print(map)
+    # print(light_map)
+
+    ans = np.sum(light_map[-1, :])
 
     return int(ans)
 
-EXAMPLE_ANS = 21
+EXAMPLE_ANS = 40
 
 ex_ans = solve('./example1.txt')
 
